@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useNotifications } from './NotificationContext';
-import { fetchBins, BinData as ApiBinData } from '@/lib/api';
-
+import { fetchBins, BinData as ApiBinData, fetchDashboardData, DashboardData } from '@/lib/api';
 export interface BinData {
   type: 'wet' | 'reject' | 'recyclable' | 'hazardous';
   label: string;
@@ -20,6 +19,20 @@ interface WasteDataContextType {
 }
 
 const WasteDataContext = createContext<WasteDataContextType | undefined>(undefined);
+
+export function useWasteData() {
+  const context = useContext(WasteDataContext);
+  if (context === undefined) {
+    throw new Error('useWasteData must be used within a WasteDataProvider');
+  }
+  return context;
+}
+
+  const [dashboard, setDashboard] = useState<DashboardData | null>(null);
+
+  useEffect(() => {
+    fetchDashboardData().then(setDashboard).catch(() => setDashboard(null));
+  }, []);
 
 // Fallback data when API is not available
 const fallbackBins: BinData[] = [
@@ -97,17 +110,8 @@ export function WasteDataProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <WasteDataContext.Provider value={{ bins, getBinData, refreshBins, loading, error }}>
+    <WasteDataContext.Provider value={{ bins, getBinData, refreshBins, loading, error, dashboard }}>
       {children}
     </WasteDataContext.Provider>
   );
 }
-
-export function useWasteData() {
-  const context = useContext(WasteDataContext);
-  if (context === undefined) {
-    throw new Error('useWasteData must be used within a WasteDataProvider');
-  }
-  return context;
-}
-

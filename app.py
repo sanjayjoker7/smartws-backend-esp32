@@ -240,15 +240,31 @@ def get_waste_type():
 @app.route("/dashboard_data", methods=["GET"])
 def dashboard_data():
     def count(bt):
-        return sum(1 for x in memory_waste_logs if x["bin_type"] == bt)
+        if db is not None:
+            return db.waste_logs.count_documents({"bin_type": bt})
+        else:
+            return sum(1 for x in memory_waste_logs if x["bin_type"] == bt)
+
+    if db is not None:
+        total = db.waste_logs.count_documents({})
+    else:
+        total = len(memory_waste_logs)
 
     return jsonify({
+        "total": total,
         "wet": count("wet"),
         "dry": count("dry"),
         "recycle": count("recycle"),
         "hazardous": count("hazardous")
     })
 
+@app.route("/waste_logs", methods=["GET"])
+def get_waste_logs():
+    if db is not None:
+        logs = list(db.waste_logs.find({}, {"_id": 0}))
+        return jsonify(logs)
+    else:
+        return jsonify(memory_waste_logs)
 
 # =========================
 # RUN SERVER

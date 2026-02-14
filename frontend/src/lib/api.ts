@@ -213,3 +213,16 @@ export async function classifyWaste(image: File, deviceId?: string): Promise<Cla
     body: formData,
   });
 }
+
+// ==================== Dashboard Data API ====================
+export interface DashboardData {
+  total: number;
+  wet: number;
+  dry: number;
+  recycle: number;
+  hazardous: number;
+}
+
+export async function fetchDashboardData(): Promise<DashboardData> {
+  return fetchAPI<DashboardData>('/dashboard_data');
+}

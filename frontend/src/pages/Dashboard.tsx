@@ -3,17 +3,22 @@ import { useWasteData } from '@/contexts/WasteDataContext';
 import { Trash2, Droplets, Package, Recycle, AlertTriangle } from 'lucide-react';
 
 export default function Dashboard() {
+  
   const { bins } = useWasteData();
+  
+  // Construct dashboard stats from bins data
+  const totalItems = bins?.reduce((sum, bin) => sum + (bin.todayCollection || 0), 0) ?? 0;
+  const wetCount = bins?.find(b => b.type === 'wet')?.todayCollection ?? 0;
+  const rejectCount = bins?.find(b => b.type === 'reject')?.todayCollection ?? 0;
+  const recyclableCount = bins?.find(b => b.type === 'recyclable')?.todayCollection ?? 0;
+  const hazardousCount = bins?.find(b => b.type === 'hazardous')?.todayCollection ?? 0;
 
-  // Get individual bin data
-  const wetBin = bins.find(b => b.type === 'wet');
-  const rejectBin = bins.find(b => b.type === 'reject');
-  const recyclableBin = bins.find(b => b.type === 'recyclable');
-  const hazardousBin = bins.find(b => b.type === 'hazardous');
+  const wetBin = bins?.find(b => b.type === 'wet');
+  const rejectBin = bins?.find(b => b.type === 'reject');
+  const recyclableBin = bins?.find(b => b.type === 'recyclable');
+  const hazardousBin = bins?.find(b => b.type === 'hazardous');
 
-  // Calculate total items (using todayCollection as item count proxy)
-  const totalItems = bins.reduce((acc, bin) => acc + Math.round(bin.todayCollection), 0);
-
+  // ...existing code...
   return (
     <div className="space-y-8">
       {/* Header */}
