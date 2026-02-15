@@ -51,6 +51,7 @@ export interface BinData {
   total_capacity: number;
   today_collection: number;
   yesterday_collection: number;
+  total_collection: number;
   last_updated: string;
 }
 
@@ -216,9 +217,10 @@ export async function classifyWaste(image: File, deviceId?: string): Promise<Cla
 
 // ==================== Dashboard Data API ====================
 export interface DashboardData {
+  bins: BinData[];
   total: number;
   wet: number;
-  dry: number;
+  reject: number;
   recycle: number;
   hazardous: number;
 }

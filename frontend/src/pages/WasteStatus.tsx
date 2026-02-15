@@ -70,10 +70,10 @@ export default function WasteStatus() {
                       bin.type === 'recyclable' && 'bg-bin-recyclable',
                       bin.type === 'hazardous' && 'bg-bin-hazardous'
                     )}
-                    style={{ width: `${getBinData(bin.type)?.fillLevel}%` }}
+                    style={{ width: `${getBinData(bin.type)?.fill_level}%` }}
                   />
                 </div>
-                <span className="text-sm font-medium">{getBinData(bin.type)?.fillLevel}%</span>
+                <span className="text-sm font-medium">{getBinData(bin.type)?.fill_level}%</span>
               </div>
             )}
           </button>

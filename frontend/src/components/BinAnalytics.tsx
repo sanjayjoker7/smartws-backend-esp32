@@ -1,6 +1,6 @@
 import { TrendingUp, TrendingDown, Gauge, Hash } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { BinData } from '@/contexts/WasteDataContext';
+import { BinData } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 
@@ -17,17 +17,19 @@ const colorMap = {
 
 // Mock weekly data
 const generateWeeklyData = (bin: BinData) => [
-  { day: 'Mon', value: Math.round(bin.todayCollection * 0.8) },
-  { day: 'Tue', value: Math.round(bin.todayCollection * 1.1) },
-  { day: 'Wed', value: Math.round(bin.todayCollection * 0.9) },
-  { day: 'Thu', value: Math.round(bin.todayCollection * 1.3) },
-  { day: 'Fri', value: Math.round(bin.todayCollection * 1.0) },
-  { day: 'Sat', value: Math.round(bin.yesterdayCollection) },
-  { day: 'Sun', value: Math.round(bin.todayCollection) },
+  { day: 'Mon', value: Math.round(bin.today_collection * 0.8) },
+  { day: 'Tue', value: Math.round(bin.today_collection * 1.1) },
+  { day: 'Wed', value: Math.round(bin.today_collection * 0.9) },
+  { day: 'Thu', value: Math.round(bin.today_collection * 1.3) },
+  { day: 'Fri', value: Math.round(bin.today_collection * 1.0) },
+  { day: 'Sat', value: Math.round(bin.yesterday_collection) },
+  { day: 'Sun', value: Math.round(bin.today_collection) },
 ];
 
 export function BinAnalytics({ bin }: BinAnalyticsProps) {
-  const percentageChange = ((bin.todayCollection - bin.yesterdayCollection) / bin.yesterdayCollection) * 100;
+  const percentageChange = bin.yesterday_collection !== 0
+    ? ((bin.today_collection - bin.yesterday_collection) / bin.yesterday_collection) * 100
+    : 0;
   const isPositive = percentageChange >= 0;
   const color = colorMap[bin.type];
   const weeklyData = generateWeeklyData(bin);
@@ -44,8 +46,8 @@ export function BinAnalytics({ bin }: BinAnalyticsProps) {
             </div>
             <span className="text-sm text-muted-foreground">Fill Level</span>
           </div>
-          <p className="text-2xl font-display font-bold">{bin.fillLevel}%</p>
-          <Progress value={bin.fillLevel} className="mt-2 h-2" />
+          <p className="text-2xl font-display font-bold">{bin.fill_level}%</p>
+          <Progress value={bin.fill_level} className="mt-2 h-2" />
         </div>
 
         {/* Today's Items */}
@@ -56,8 +58,8 @@ export function BinAnalytics({ bin }: BinAnalyticsProps) {
             </div>
             <span className="text-sm text-muted-foreground">Today's Items</span>
           </div>
-          <p className="text-2xl font-display font-bold">{Math.round(bin.todayCollection)}</p>
-          <p className="text-xs text-muted-foreground mt-1">items collected today</p>
+          <p className="text-2xl font-display font-bold">{Math.round(bin.today_collection)}</p>
+          <p className="text-[10px] text-muted-foreground mt-1">Today ({Math.round(bin.total_collection)} total)</p>
         </div>
 
         {/* Trend */}
@@ -93,7 +95,7 @@ export function BinAnalytics({ bin }: BinAnalyticsProps) {
           <h4 className="text-sm font-medium text-muted-foreground mb-4">Today's Collection</h4>
           <div className="flex items-end gap-4">
             <span className="text-4xl font-display font-bold" style={{ color }}>
-              {Math.round(bin.todayCollection)}
+              {Math.round(bin.today_collection)}
             </span>
             <span className="text-lg text-muted-foreground mb-1">items</span>
           </div>
@@ -103,7 +105,7 @@ export function BinAnalytics({ bin }: BinAnalyticsProps) {
           <h4 className="text-sm font-medium text-muted-foreground mb-4">Yesterday's Collection</h4>
           <div className="flex items-end gap-4">
             <span className="text-4xl font-display font-bold text-muted-foreground">
-              {Math.round(bin.yesterdayCollection)}
+              {Math.round(bin.yesterday_collection)}
             </span>
             <span className="text-lg text-muted-foreground mb-1">items</span>
           </div>

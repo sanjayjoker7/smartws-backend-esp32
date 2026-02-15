@@ -35,29 +35,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // DEMO MODE: Always authenticate with dummy user
-    setIsAuthenticated(true);
-    setUser({
-      id: 1,
-      username: "demo",
-      email: email,
-      first_name: "Demo",
-      last_name: "User"
-    });
-    return true;
-    // Uncomment below for real authentication
-    // try {
-    //   const response = await loginUser(email, password);
-    //   if (response.user) {
-    //     setIsAuthenticated(true);
-    //     setUser(response.user);
-    //     return true;
-    //   }
-    //   return false;
-    // } catch (error) {
-    //   console.error('Login failed:', error);
-    //   return false;
-    // }
+    try {
+      const response = await loginUser(email, password);
+      if (response.user) {
+        setIsAuthenticated(true);
+        setUser(response.user);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Login failed:', error);
+      return false;
+    }
   };
 
   const logout = async () => {
