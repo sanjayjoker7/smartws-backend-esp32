@@ -33,13 +33,14 @@ memory_waste_logs = []
 
 if mongo_uri:
     try:
-        client = MongoClient(mongo_uri, serverSelectionTimeoutMS=3000)
+        # Increased timeout from 3s to 10s for more reliable connections
+        client = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
         client.admin.command("ping")
         db = client.smart_waste_db
-        print("[DB] Connected to MongoDB")
+        print("[DB] Connected to MongoDB Atlas")
     except (ConfigurationError, ServerSelectionTimeoutError, OperationFailure) as exc:
         db = None
-        print("[DB] Mongo disabled:", exc)
+        print("[DB] MongoDB connection failed - using memory mode")
 else:
     print("[DB] No MONGO_URI → memory mode")
 
