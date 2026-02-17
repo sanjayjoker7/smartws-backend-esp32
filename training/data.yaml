@@ -1,0 +1,7 @@
+path: newData2/newData2
+train: images/train
+val: images/val
+test: images/test
+
+nc: 4
+names: ['hazardous', 'recycle', 'reject', 'wet']

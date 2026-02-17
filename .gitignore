@@ -10,9 +10,7 @@ ENV/
 
 # Project specific
 debug_images/
-training/
-*.pt
-
+newData2/
 # Node / Frontend
 frontend/node_modules/
 frontend/dist/
