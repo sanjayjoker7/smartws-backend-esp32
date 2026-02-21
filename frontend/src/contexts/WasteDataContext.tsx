@@ -33,7 +33,12 @@ export const WasteDataProvider = ({ children }: { children: ReactNode }) => {
         setLoading(false);
       }
     };
-    fetchData();
+
+    // Fetch data every 10 seconds
+    fetchData(); // Initial fetch
+    const interval = setInterval(fetchData, 10000);
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
 
   const bins = dashboard?.bins || [];

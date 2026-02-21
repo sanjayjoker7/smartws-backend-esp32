@@ -2,6 +2,7 @@ import datetime
 import os
 import io
 import numpy as np
+import threading
 
 from flask import Flask, jsonify, request
 from PIL import Image
@@ -9,6 +10,7 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 from pymongo.errors import ConfigurationError, ServerSelectionTimeoutError, OperationFailure
 from flask_cors import CORS
+from flask_socketio import SocketIO, emit
 # =========================
 # BASIC SETUP
 # =========================
@@ -22,6 +24,9 @@ CORS(
     allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials", "Access-Control-Allow-Origin"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 )
+
+# Initialize SocketIO
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # =========================
 # DATABASE CONFIG
